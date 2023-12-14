@@ -439,7 +439,7 @@ with tab4:
     folium_static(poland_map)
 
 with tab5:
-    days_back = st.number_input('Enter the number of days back:', min_value=1, max_value=30, value=7)
+    days_back = st.number_input('Enter the number of days back:', min_value=1, max_value=14, value=1)
 
     city_data = city_coordinates[selected_city]
     latitude, longitude = city_data['lat'], city_data['lon']
