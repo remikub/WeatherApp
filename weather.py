@@ -456,17 +456,13 @@ with tab5:
         st.subheader("Daily Weather Data:")
         st.table(daily_data)
 
-        # Plot the data
+        # Plot the data using Streamlit chart functions
         st.subheader("Daily Weather Chart:")
-        fig, ax = plt.subplots()
-        ax.plot(daily_data["Date"], daily_data["Min Temperature"], label="Min Temperature")
-        ax.plot(daily_data["Date"], daily_data["Max Temperature"], label="Max Temperature")
-        ax.bar(daily_data["Date"], daily_data["Precipitation Total"], label="Precipitation")
-        ax.scatter(daily_data["Date"], daily_data["Wind Speed Max"], label="Wind Speed Max")
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Values")
-        ax.legend()
-        st.pyplot(fig)
+        st.line_chart(data=daily_data[["Min Temperature", "Max Temperature"]])
+        st.bar_chart(data=daily_data["Precipitation Total"])
+        st.line_chart(data=daily_data["Wind Speed Max"])
+
+
 
 
 
