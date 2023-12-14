@@ -6,8 +6,6 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import pyodbc
-import pymssql
 import altair as alt
 import pydeck as pdk
 import folium
@@ -21,8 +19,8 @@ DB_PASS = 'pass'
 DB_NAME = 'db'
 SERVER='ip'
 DSN_STRING = f"DSN=POP;UID={DB_USER};PWD={DB_PASS};DATABASE={DB_NAME}"
-def get_db_connection():
-    return pyodbc.connect(DSN_STRING)
+#def get_db_connection():
+#    return pyodbc.connect(DSN_STRING)
 
 ############################################################################################################
 # OpenWeatherMap API configuration
@@ -41,13 +39,14 @@ downloaded_hks_data['Date'] = downloaded_hks_data['Date'].dt.date
 ############################################################################################################
 # HKS live data from SQL
 def get_hks_customer_data(daycount):
-    con = pymssql.connect(host='ip',user='user',password='pass',database='db')
-    cur = con.cursor()
-    cur.execute(f"EXEC GetHKSCustomerData {daycount}")
-    data = cur.fetchall()
-    columns = [column[0] for column in cur.description]
-    df = pd.DataFrame(data, columns=columns)
-    return df
+    return None
+    #con = pymssql.connect(host='ip',user='user',password='pass',database='db')
+    #cur = con.cursor()
+    #cur.execute(f"EXEC GetHKSCustomerData {daycount}")
+    #data = cur.fetchall()
+    #columns = [column[0] for column in cur.description]
+    #df = pd.DataFrame(data, columns=columns)
+    #return df
 
 ############################################################################################################
 # current weather function
