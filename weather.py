@@ -6,8 +6,6 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-#import pyodbc
-#import pymssql
 import altair as alt
 import pydeck as pdk
 import folium
