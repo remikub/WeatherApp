@@ -16,10 +16,10 @@ from streamlit_folium import folium_static
 
 ############################################################################################################
 # SQL configuration
-DB_USER = 'sync'
-DB_PASS = '9jC1|s"2:@E#AabmFxFQ'
-DB_NAME = 'POP'
-SERVER='172.16.30.135'
+DB_USER = 'user'
+DB_PASS = 'pass'
+DB_NAME = 'db'
+SERVER='ip'
 DSN_STRING = f"DSN=POP;UID={DB_USER};PWD={DB_PASS};DATABASE={DB_NAME}"
 def get_db_connection():
     return pyodbc.connect(DSN_STRING)
