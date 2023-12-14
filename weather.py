@@ -6,10 +6,13 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import pyodbc
+import pymssql
 import altair as alt
 import pydeck as pdk
 import folium
 from streamlit_folium import folium_static
+import plotly.express as px
 
 ############################################################################################################
 # SQL configuration
@@ -18,8 +21,8 @@ DB_PASS = 'pass'
 DB_NAME = 'db'
 SERVER='ip'
 DSN_STRING = f"DSN=POP;UID={DB_USER};PWD={DB_PASS};DATABASE={DB_NAME}"
-#def get_db_connection():
-    #return pyodbc.connect(DSN_STRING)
+def get_db_connection():
+    return pyodbc.connect(DSN_STRING)
 
 ############################################################################################################
 # OpenWeatherMap API configuration
@@ -37,14 +40,14 @@ downloaded_hks_data['Date'] = downloaded_hks_data['Date'].dt.date
 
 ############################################################################################################
 # HKS live data from SQL
-#def get_hks_customer_data(daycount):
-#    con = pymssql.connect(host='172.16.30.135',user='sync',password='9jC1|s"2:@E#AabmFxFQ',database='POP')
-#    cur = con.cursor()
-#    cur.execute(f"EXEC GetHKSCustomerData {daycount}")
-#    data = cur.fetchall()
-#    columns = [column[0] for column in cur.description]
-#    df = pd.DataFrame(data, columns=columns)
-#    return df
+def get_hks_customer_data(daycount):
+    con = pymssql.connect(host='172.16.30.135',user='sync',password='9jC1|s"2:@E#AabmFxFQ',database='POP')
+    cur = con.cursor()
+    cur.execute(f"EXEC GetHKSCustomerData {daycount}")
+    data = cur.fetchall()
+    columns = [column[0] for column in cur.description]
+    df = pd.DataFrame(data, columns=columns)
+    return df
 
 ############################################################################################################
 # current weather function
@@ -449,16 +452,18 @@ with tab5:
         # Process and display data
         daily_data = process_daily_historical_data(historical_data)
 
-        # Display data in a table
-        st.subheader("Daily Weather Data:")
-        st.table(daily_data)
+        # Plot the data using Plotly Express
+        fig = px.line(daily_data, x="Date", y=["Min Temperature", "Max Temperature"],
+                      labels={"value": "Temperature (°C)", "variable": "Item"})
 
-        # Plot the data using Streamlit chart functions
-        st.subheader("Daily Weather Chart:")
-        st.line_chart(data=daily_data[["Min Temperature", "Max Temperature"]])
-        st.bar_chart(data=daily_data["Precipitation Total"])
-        st.line_chart(data=daily_data["Wind Speed Max"])
+        fig.add_bar(x=daily_data["Date"], y=daily_data["Precipitation Total"], name="Precipitation Total",
+                    text=daily_data["Precipitation Total"].astype(str) + " mm",
+                    hoverinfo="text+y")
+        fig.add_scatter(x=daily_data["Date"], y=daily_data["Wind Speed Max"], mode="markers", name="Wind Speed Max",
+                        text=daily_data["Wind Speed Max"].astype(str) + " m/s",
+                        hoverinfo="text+y")
 
+        st.plotly_chart(fig)
 
 
 
