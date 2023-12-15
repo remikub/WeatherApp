@@ -14,8 +14,8 @@ import plotly.express as px
 
 ############################################################################################################
 # OpenWeatherMap API configuration
-api_key = 'c9b4fd5fad517418956aacfad0154f33'
-# backup API key: '04df6090950fc05f7bcb67ff9990eec3'
+#api_key = 'c9b4fd5fad517418956aacfad0154f33'
+api_key = '04df6090950fc05f7bcb67ff9990eec3'
 api_url = 'http://api.openweathermap.org/data/2.5/weather'
 api_url2 = 'http://api.openweathermap.org/data/2.5/onecall'
 api_url3 = 'http://api.openweathermap.org/data/2.5/air_pollution'
