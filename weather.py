@@ -278,7 +278,7 @@ st.sidebar.markdown(
 # weather dashboard config
 st.title('Weather Dashboard')
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Current Weather", "6 days Forecast", "AQI", "Map", "Historical Data", "Historical Data Downloaded"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Current City Weather", "6 days Forecast", "AQI", "Map", "Historical Data", "Historical Data Downloaded"])
 
 with tab1:
     city_data = city_coordinates[selected_city]
