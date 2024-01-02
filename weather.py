@@ -284,7 +284,7 @@ st.sidebar.markdown(
 # weather dashboard config
 st.title('Weather Dashboard')
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Selected City Weather", "6 days Forecast", "AQI", "Weather Map", "Historical Weather Data", "Suntago Customers"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Selected City Weather", "6 days Forecast", "AQI", "Weather Map", "Historical Weather Data", "Suntago Data"])
 
 with tab1:
     city_data = city_coordinates[selected_city]
@@ -453,7 +453,7 @@ with tab5:
                         text=daily_data["Wind Speed Max"].astype(str) + " m/s",
                         hoverinfo="text+y")
         st.plotly_chart(fig)
-    st.subheader("Downloaded Weather Data")
+    st.subheader("Downloaded Data")
     st.markdown("""
     <style>
         .dataframe th {
