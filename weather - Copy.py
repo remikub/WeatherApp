@@ -193,7 +193,8 @@ city_coordinates = {
 
 ############################################################################################################
 # set page title
-st.set_page_config(page_title='Weather Dashboard', page_icon='🌞', layout='wide')
+def main():
+    st.set_page_config(page_title='Weather Dashboard', page_icon='🌞', layout='wide')
 
 ############################################################################################################
 # left sidebar config
@@ -206,8 +207,6 @@ st.markdown("""
         align-items: center;
         text-align: center;
         color: white;
-        min-width: 300px;
-        max-width: 400px;
     }
     [data-testid=stSidebar] .stSelectbox label {
         color: white; /* Set the sidebar header text color to white */
@@ -275,16 +274,11 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-
-
-
-
-
 ############################################################################################################
 # weather dashboard config
 st.title('Weather Dashboard')
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Selected City Weather", "6 days Forecast", "AQI", "Weather Map", "Historical Weather Data", "Suntago Customers"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Current City Weather", "6 days Forecast", "AQI", "Map", "Historical Data", "Historical Data Downloaded", "Suntago Customers"])
 
 with tab1:
     city_data = city_coordinates[selected_city]
@@ -408,10 +402,12 @@ with tab3:
             components_df['Value'] = components_df['Value'].round(2)
             components_df['Pollutant Name'] = components_df['Component'].apply(lambda x: component_mapping[x]['name'])
             components_df['Unit'] = components_df['Component'].apply(lambda x: component_mapping[x]['unit'])
-            components_df['Level'] = components_df.apply(lambda row: (row['Value'] / limits[row['Component']][-1]) * 100, axis=1).round(2)
-            components_df['Level'] = components_df['Level'].map('{:.2f}%'.format)
-            components_df = components_df[['Pollutant Name', 'Component', 'Value', 'Unit', 'Level']]
+            components_df['Percentage of Max Limit'] = components_df.apply(lambda row: (row['Value'] / limits[row['Component']][-1]) * 100, axis=1).round(2)
+            components_df = components_df[['Pollutant Name', 'Component', 'Value', 'Unit', 'Percentage of Max Limit']]
+
             st.dataframe(components_df, hide_index=True)
+            csv_link = get_table_download_link_csv(components_df)
+            st.markdown(csv_link, unsafe_allow_html=True)
         else:
             st.error('Error fetching air quality data.')
 
@@ -453,30 +449,19 @@ with tab5:
                         text=daily_data["Wind Speed Max"].astype(str) + " m/s",
                         hoverinfo="text+y")
         st.plotly_chart(fig)
-    st.subheader("Downloaded Weather Data")
-    st.markdown("""
-    <style>
-        .dataframe th {
-            white-space: normal !important;
-            word-wrap: break-word;
-            max-width: 50px;
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-    </style>
-    """, unsafe_allow_html=True)
 
-    st.dataframe(downloaded_historical_data, hide_index=True)
-  
-    
-############################################################################################################
 with tab6:
+    st.dataframe(downloaded_historical_data, hide_index=True)
+    
+
+############################################################################################################
+with tab7:
 # customer visits data
     st.subheader('Suntago Customer Visits')
     if enable_sql_connection:
         #daycount_slider = st.slider('Select Days Range for Live Data:', min_value=0, max_value=14, value=0)
         daycount_slider = st.selectbox('Select Days Range for Live Data:', range(1, 15))
-    visits_tab1, visits_tab2, visits_tab3, visits_tab4, visits_tab5 = st.tabs(["Live Data", "Live Data Chart", "Historical Suntago Data", "Historical Suntago Chart","Does the weather matter?"])
+    visits_tab1, visits_tab2, visits_tab3, visits_tab4, visits_tab5 = st.tabs(["Live Data", "Live Data Graph", "Downloaded Data", "Downloaded Data Graph","Does the weather matter?"])
 
     with visits_tab1:
         if enable_sql_connection:
