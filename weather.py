@@ -36,7 +36,7 @@ downloaded_hks_data['Date'] = downloaded_hks_data['Date'].dt.date
 ############################################################################################################
 # HKS live data from SQL function
 def get_hks_customer_data(daycount):
-    con = pymssql.connect(host='172.16.30.135',user='sync',password='9jC1|s"2:@E#AabmFxFQ',database='POP')
+    con = pymssql.connect(host='ip',user='user',password='pass',database='db')
     cur = con.cursor()
     cur.execute(f"EXEC GetHKSCustomerData {daycount}")
     data = cur.fetchall()
