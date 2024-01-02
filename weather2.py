@@ -549,37 +549,22 @@ correlation_matrix = merged_data[['Total Visits','AVG Min Temp','AVG Max Temp', 
 # Function to highlight the correlation matrix
 def highlight_corr(val):
     if val >= 1:
-        background_color = 'background-color: #168500'
+        background_color = 'background-color: #AE1C3E'
         font_color = 'color: #000000'  
-    elif val >= 0.8:
-        background_color = 'background-color: #36E310'
+    elif val >= 0.9:
+        background_color = 'background-color: #CD473E'
         font_color = 'color: #000000'  
-    elif val >= 0.6:
-        background_color = 'background-color: #6EFE45'
+    elif val >= 0.09:
+        background_color = 'background-color: #E67A56'
         font_color = 'color: #000000'  
-    elif val >= 0.4:
-        background_color = 'background-color: #BBFF9D'
+    elif val >= 0.05:
+        background_color = 'background-color: #F4AA73'
         font_color = 'color: #000000'  
-    elif val >= 0.2:
-        background_color = 'background-color: #BBFF9D'
+    elif val >= 0:
+        background_color = 'background-color: #EEDCC5'
         font_color = 'color: #000000'  
-    elif val >= -0.2:
-        background_color = 'background-color: #F8F5FD'
-        font_color = 'color: #000000'    
-    elif val >= -0.4:
-        background_color = 'background-color: #D4D0F8'
-        font_color = 'color: #000000'    
-    elif val >= -0.6:
-        background_color = 'background-color: #9CA2F9'
-        font_color = 'color: #000000'    
-    elif val >= -0.8:
-        background_color = 'background-color: #665DFE'
-        font_color = 'color: #000000'  
-    elif val >= -1:
-        background_color = 'background-color: #665DFE'
-        font_color = 'color: #000000'                                  
     else:
-        background_color = 'background-color: #F5F5F5'
+        background_color = ''
         font_color = 'color: #000000'
     return f'{background_color}; {font_color}'
 
