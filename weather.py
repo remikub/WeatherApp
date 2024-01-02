@@ -6,8 +6,6 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import pyodbc
-import pymssql
 import altair as alt
 import pydeck as pdk
 import folium
@@ -36,13 +34,14 @@ downloaded_hks_data['Date'] = downloaded_hks_data['Date'].dt.date
 ############################################################################################################
 # HKS live data from SQL function
 def get_hks_customer_data(daycount):
-    con = pymssql.connect(host='ip',user='user',password='pass',database='db')
-    cur = con.cursor()
-    cur.execute(f"EXEC GetHKSCustomerData {daycount}")
-    data = cur.fetchall()
-    columns = [column[0] for column in cur.description]
-    df = pd.DataFrame(data, columns=columns)
-    return df
+    #con = pymssql.connect(host='ip',user='user',password='pass',database='db')
+    #cur = con.cursor()
+    #cur.execute(f"EXEC GetHKSCustomerData {daycount}")
+    #data = cur.fetchall()
+    #columns = [column[0] for column in cur.description]
+    #df = pd.DataFrame(data, columns=columns)
+    #return df
+    return None
 
 ############################################################################################################
 # current weather function
