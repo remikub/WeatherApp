@@ -13,6 +13,7 @@ from streamlit_folium import folium_static
 import plotly.express as px
 from scipy import stats
 import base64
+import math
 from io import BytesIO
 
 ############################################################################################################
@@ -276,10 +277,6 @@ st.sidebar.markdown(
 )
 
 
-
-
-
-
 ############################################################################################################
 # weather dashboard config
 st.title('Weather Dashboard')
@@ -416,21 +413,31 @@ with tab3:
             st.error('Error fetching air quality data.')
 
 with tab4:
+    poland_map = folium.Map(location=[52.0, 19.0], zoom_start=6, control_scale=True, tiles='CartoDB positron')
     if st.button("Open Map"):
-        poland_map = folium.Map(location=[52.0, 19.0], zoom_start=6, control_scale=True)
+        heat_data = [[city_data['lat'], city_data['lon'], fetch_weather(city_data['lat'], city_data['lon'])['main']['temp_max']] for city, city_data in city_coordinates.items()]
+        heat_layer = folium.plugins.HeatMap(heat_data, min_opacity=0.6, radius=25)
+        poland_map.add_child(heat_layer)
         for city_name, coordinates in city_coordinates.items():
             latitude, longitude = coordinates['lat'], coordinates['lon']
             temperature_data = fetch_weather(latitude, longitude)
             if temperature_data:
-                temperature = temperature_data['main']['temp']
+                temperature = temperature_data['main']['temp_max']
                 weather_icon = temperature_data['weather'][0]['icon']
-                folium.Marker(
+                # Marker with weather icon and max temperature
+                marker = folium.Marker(
                     location=[latitude, longitude],
                     popup=f"{city_name} - {temperature}°C",
-                    icon=folium.CustomIcon(icon_image=f'http://openweathermap.org/img/w/{weather_icon}.png', icon_size=(50, 50)),
+                    icon=folium.CustomIcon(icon_image=f'http://openweathermap.org/img/w/{weather_icon}.png', icon_size=(50, 50), icon_anchor=(2, 2)),
+                )
+                marker.add_to(poland_map)
+                # Label to display the max temperature
+                folium.Marker(
+                    location=[latitude, longitude],
+                    icon=folium.DivIcon(html=f"<div style='font-size: 12pt; color: black;'>{temperature}°C</div>")
                 ).add_to(poland_map)
             else:
-                st.warning(f'Error fetching temperature data for {city_name}.')
+                st.warning(f'Error fetching data for {city_name}.')
         folium_static(poland_map)
 
 with tab5:
