@@ -6,15 +6,15 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+#import pyodbc
+#import pymssql
 import altair as alt
 import pydeck as pdk
 import folium
 from streamlit_folium import folium_static
-from folium import plugins
 import plotly.express as px
 from scipy import stats
 import base64
-import math
 from io import BytesIO
 
 ############################################################################################################
@@ -24,8 +24,7 @@ api_key = 'c9b4fd5fad517418956aacfad0154f33'
 api_url = 'http://api.openweathermap.org/data/2.5/weather'
 api_url2 = 'http://api.openweathermap.org/data/2.5/onecall'
 api_url3 = 'http://api.openweathermap.org/data/2.5/air_pollution'
-api_url4 = 'https://api.openweathermap.org/data/3.0/onecall/timemachine'
-api_url5 = 'https://api.openweathermap.org/data/3.0/onecall/day_summary'
+api_url4 = 'https://api.openweathermap.org/data/3.0/onecall/day_summary'
 
 ############################################################################################################
 # HKS downloaded data upload
@@ -35,15 +34,14 @@ downloaded_hks_data['Date'] = downloaded_hks_data['Date'].dt.date
 
 ############################################################################################################
 # HKS live data from SQL function
-def get_hks_customer_data(daycount):
-    #con = pymssql.connect(host='ip',user='user',password='pass',database='db')
-    #cur = con.cursor()
-    #cur.execute(f"EXEC GetHKSCustomerData {daycount}")
-    #data = cur.fetchall()
-    #columns = [column[0] for column in cur.description]
-    #df = pd.DataFrame(data, columns=columns)
-    #return df
-    return None
+#def get_hks_customer_data(daycount):
+#    con = pymssql.connect(host='ip',user='user',password='pass',database='db')
+#    cur = con.cursor()
+#    cur.execute(f"EXEC GetHKSCustomerData {daycount}")
+#    data = cur.fetchall()
+#    columns = [column[0] for column in cur.description]
+#    df = pd.DataFrame(data, columns=columns)
+#    return df
 
 ############################################################################################################
 # current weather function
@@ -97,6 +95,7 @@ def fetch_air_quality(lat, lon):
     else:
         print('Error fetching air quality data.')
         return None, None
+    
 def categorize_air_quality(row, limits):
     """
     Categorize air quality based on specified limits for each component.
@@ -126,7 +125,7 @@ def fetch_historical_data(lat, lon, days_back):
             "appid": api_key,
             "units": metric
         }
-        response = requests.get(api_url5, params=params)
+        response = requests.get(api_url4, params=params)
         data = response.json()
         historical_data.append(data)
     return historical_data
@@ -156,7 +155,6 @@ def process_daily_historical_data(historical_data):
 # Historical downloaded data upoad
 excel_file = 'two_cities_historical_weather_data.xlsx'
 downloaded_historical_data = pd.read_excel(excel_file)
-#downloaded_historical_data['Date'] = downloaded_historical_data['Date'].dt.date
 
 ############################################################################################################
 # weather icon function
@@ -320,7 +318,7 @@ with tab1:
             st.write(f'Cloudiness: {clouds}%')
 
 with tab2:
-    if st.button("RUN Forecast"):
+    if st.button(f"RUN Forecast for {selected_city}"):
         city_data = city_coordinates[selected_city]
         latitude, longitude = city_data['lat'], city_data['lon']
         forecast_data = get_6_days_forecast(latitude, longitude)
@@ -381,7 +379,7 @@ with tab3:
         'pm10': {'name': 'PM10', 'unit': 'μg/m³'},
         'nh3': {'name': 'Ammonia', 'unit': 'μg/m³'},
     }
-    if st.button("RUN AQI"):
+    if st.button(f"RUN AQI for {selected_city}"):
         city_data = city_coordinates[selected_city]
         latitude, longitude = city_data['lat'], city_data['lon']
         air_quality_data, components_data = fetch_air_quality(latitude, longitude)
@@ -450,7 +448,7 @@ with tab5:
     city_data = city_coordinates[selected_city]
     latitude, longitude = city_data['lat'], city_data['lon']
     historical_data = fetch_historical_data(latitude, longitude, days_back)
-    if st.button("RUN History Data"):
+    if st.button(f"RUN History Data for {selected_city}"):
         historical_data = fetch_historical_data(latitude, longitude, days_back)
         daily_data = process_daily_historical_data(historical_data)
 
@@ -486,7 +484,7 @@ with tab6:
     st.subheader('Suntago Customer Visits')
     if enable_sql_connection:
         #daycount_slider = st.slider('Select Days Range for Live Data:', min_value=0, max_value=14, value=0)
-        daycount_slider = st.selectbox('Select Days Range for Live Data:', range(1, 15))
+        daycount_slider = st.selectbox('Enter the number of days back for live data:', range(1, 15))
     visits_tab1, visits_tab2, visits_tab3, visits_tab4, visits_tab5 = st.tabs(["Live Data", "Live Data Chart", "Historical Suntago Data", "Historical Suntago Chart","Does the weather matter?"])
 
     with visits_tab1:
