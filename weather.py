@@ -10,6 +10,7 @@ import altair as alt
 import pydeck as pdk
 import folium
 from streamlit_folium import folium_static
+from folium import plugins
 import plotly.express as px
 from scipy import stats
 import base64
@@ -319,7 +320,7 @@ with tab1:
             st.write(f'Cloudiness: {clouds}%')
 
 with tab2:
-    if st.button("Show Forecast"):
+    if st.button("RUN Forecast"):
         city_data = city_coordinates[selected_city]
         latitude, longitude = city_data['lat'], city_data['lon']
         forecast_data = get_6_days_forecast(latitude, longitude)
@@ -380,7 +381,7 @@ with tab3:
         'pm10': {'name': 'PM10', 'unit': 'μg/m³'},
         'nh3': {'name': 'Ammonia', 'unit': 'μg/m³'},
     }
-    if st.button("Check AQI"):
+    if st.button("RUN AQI"):
         city_data = city_coordinates[selected_city]
         latitude, longitude = city_data['lat'], city_data['lon']
         air_quality_data, components_data = fetch_air_quality(latitude, longitude)
@@ -414,7 +415,7 @@ with tab3:
 
 with tab4:
     poland_map = folium.Map(location=[52.0, 19.0], zoom_start=6, control_scale=True, tiles='CartoDB positron')
-    if st.button("Open Map"):
+    if st.button("RUN Map"):
         heat_data = [[city_data['lat'], city_data['lon'], fetch_weather(city_data['lat'], city_data['lon'])['main']['temp_max']] for city, city_data in city_coordinates.items()]
         heat_layer = folium.plugins.HeatMap(heat_data, min_opacity=0.6, radius=25)
         poland_map.add_child(heat_layer)
@@ -440,13 +441,16 @@ with tab4:
                 st.warning(f'Error fetching data for {city_name}.')
         folium_static(poland_map)
 
+
+
+
 with tab5:
     #days_back = st.number_input('Enter the number of days back:', min_value=1, max_value=14, value=1)
     days_back = st.selectbox('Enter the number of days back:', range(1, 15))
     city_data = city_coordinates[selected_city]
     latitude, longitude = city_data['lat'], city_data['lon']
     historical_data = fetch_historical_data(latitude, longitude, days_back)
-    if st.button("Fetch Data"):
+    if st.button("RUN History Data"):
         historical_data = fetch_historical_data(latitude, longitude, days_back)
         daily_data = process_daily_historical_data(historical_data)
 
